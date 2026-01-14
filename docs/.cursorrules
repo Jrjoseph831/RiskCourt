@@ -1,0 +1,14 @@
+Project: RiskCourt — quant-style NBA analytics terminal (no betting).
+
+Hard rules:
+- No wagering features, no sportsbook scraping, no private endpoint reverse engineering.
+- Odds only from licensed odds API or user-entered odds.
+- No user-submitted code execution.
+- Keep UI terminal-like: modern, minimal, dense but calm.
+
+Working rules:
+- Before coding, list exact files to change and acceptance criteria.
+- Use TypeScript, strong typing, and zod validation for any external inputs.
+- Prefer small, testable steps and minimal diffs.
+- Return full file contents for modified files.
+- For Supabase: provide SQL + dashboard directions.
