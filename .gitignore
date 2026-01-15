@@ -6,6 +6,10 @@
 # Cursor MCP config (contains tokens)
 .cursor/mcp.json
 
+# Supabase local config
+supabase/config.toml
+supabase/.gitignore
+
 # Dependencies
 node_modules/
 
