@@ -21,10 +21,13 @@ function formatLine(row: SlateRow) {
 export function SlateTable({ rows }: { rows: SlateRow[] }) {
   const [q, setQ] = useState("");
   const [market, setMarket] = useState<MarketKey | "all">("all");
+  const [sortKey, setSortKey] = useState<"time" | "price">("time");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const qq = q.trim().toLowerCase();
-    return rows.filter((r) => {
+    let out = rows.filter((r) => {
       const matchQ =
         !qq ||
         r.away.toLowerCase().includes(qq) ||
@@ -32,7 +35,29 @@ export function SlateTable({ rows }: { rows: SlateRow[] }) {
       const matchM = market === "all" ? true : r.market === market;
       return matchQ && matchM;
     });
-  }, [rows, q, market]);
+
+    out = out.sort((a, b) => {
+      if (sortKey === "time") {
+        const ta = new Date(a.gameTime).getTime();
+        const tb = new Date(b.gameTime).getTime();
+        return sortDir === "asc" ? ta - tb : tb - ta;
+      }
+      const pa = a.bestPrice;
+      const pb = b.bestPrice;
+      return sortDir === "asc" ? pa - pb : pb - pa;
+    });
+
+    return out;
+  }, [rows, q, market, sortKey, sortDir]);
+
+  function toggleSort(key: "time" | "price") {
+    if (sortKey === key) {
+      setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -56,54 +81,87 @@ export function SlateTable({ rows }: { rows: SlateRow[] }) {
           </select>
         </div>
 
-        <div className="text-xs text-zinc-400">
-          Rows: {filtered.length}
-        </div>
+        <div className="text-xs text-zinc-400">Rows: {filtered.length}</div>
       </div>
 
       <div className="overflow-hidden rounded-lg border border-zinc-800">
-        <div className="grid grid-cols-12 gap-0 bg-zinc-950 px-3 py-2 text-xs text-zinc-400">
-          <div className="col-span-2">Time</div>
+        <div className="sticky top-0 z-10 grid grid-cols-12 gap-0 bg-zinc-950/95 px-3 py-3 text-xs text-zinc-400 backdrop-blur-sm">
+          <button
+            className="col-span-2 text-left"
+            onClick={() => toggleSort("time")}
+            aria-label="Sort by time"
+          >
+            Time {sortKey === "time" ? (sortDir === "asc" ? "▲" : "▼") : ""}
+          </button>
           <div className="col-span-4">Matchup</div>
           <div className="col-span-2">Mkt</div>
           <div className="col-span-2">Pick</div>
           <div className="col-span-1 text-right">Line</div>
-          <div className="col-span-1 text-right">Price</div>
+          <button
+            className="col-span-1 text-right"
+            onClick={() => toggleSort("price")}
+            aria-label="Sort by price"
+          >
+            Price {sortKey === "price" ? (sortDir === "asc" ? "▲" : "▼") : ""}
+          </button>
         </div>
 
         <div className="divide-y divide-zinc-900">
-          {filtered.map((r) => (
-            <div
-              key={r.id}
-              className="grid grid-cols-12 px-3 py-2 text-sm hover:bg-zinc-950/60"
-            >
-              <div className="col-span-2 text-zinc-300">
-                {new Date(r.gameTime).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+          {filtered.map((r) => {
+            const open = openId === r.id;
+            return (
+              <div key={r.id} className="">
+                <div
+                  className={`grid grid-cols-12 px-3 py-3 text-sm hover:bg-zinc-950/60 cursor-pointer ${
+                    open ? "bg-zinc-950/50" : ""
+                  }`}
+                  onClick={() => setOpenId(open ? null : r.id)}
+                >
+                  <div className="col-span-2 text-zinc-300">
+                    {new Date(r.gameTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+                  <div className="col-span-4 text-zinc-200">
+                    <div className="font-medium">{r.away} @ {r.home}</div>
+                    <div className="text-xs text-zinc-500">{r.venue || "TBD"}</div>
+                  </div>
+                  <div className="col-span-2 text-zinc-300">{formatMarket(r.market)}</div>
+                  <div className="col-span-2 text-zinc-200">{r.selection}</div>
+                  <div className="col-span-1 text-right text-zinc-300">{formatLine(r)}</div>
+                  <div className="col-span-1 text-right text-zinc-200">{formatPrice(r.bestPrice)}</div>
+                </div>
+
+                {open && (
+                  <div className="px-4 py-3 bg-zinc-950/90 text-sm text-zinc-300">
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <div className="text-xs text-zinc-500">Inputs</div>
+                        <div className="mt-1">Model inputs placeholder</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Notes</div>
+                        <div className="mt-1">Analyst notes placeholder</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-zinc-500">Risk</div>
+                        <div className="mt-1">Risk summary placeholder</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="col-span-4 text-zinc-200">
-                {r.away} @ {r.home}
-              </div>
-              <div className="col-span-2 text-zinc-300">{formatMarket(r.market)}</div>
-              <div className="col-span-2 text-zinc-200">{r.selection}</div>
-              <div className="col-span-1 text-right text-zinc-300">{formatLine(r)}</div>
-              <div className="col-span-1 text-right text-zinc-200">{formatPrice(r.bestPrice)}</div>
-            </div>
-          ))}
+            );
+          })}
 
           {filtered.length === 0 && (
-            <div className="px-3 py-8 text-center text-sm text-zinc-500">
-              No rows match your filters.
-            </div>
+            <div className="px-3 py-8 text-center text-sm text-zinc-500">No rows match your filters.</div>
           )}
         </div>
       </div>
 
-      <div className="text-xs text-zinc-500">
-        Mock data for UI build. Will be replaced by Supabase reads after db-schema-v0 merges.
-      </div>
+      <div className="text-xs text-zinc-500">Mock data for UI build. Will be replaced by Supabase reads after db-schema-v0 merges.</div>
     </div>
   );
 }
