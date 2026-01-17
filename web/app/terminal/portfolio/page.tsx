@@ -1,14 +1,16 @@
 export default function PortfolioPage() {
   return (
-    <div>
-      <div className="mb-4">
-        <h1 className="text-2xl font-semibold tracking-tight text-zinc-100">Portfolio</h1>
-        <p className="mt-1 text-sm text-zinc-400">Portfolio view — coming soon.</p>
+    <div className="flex flex-col h-full">
+      <div className="px-4 py-3 border-b border-[#1a1a1a]">
+        <h1 className="text-lg font-medium tracking-tight">Portfolio</h1>
+        <p className="mt-0.5 text-xs text-[#666]">Portfolio view — coming soon.</p>
       </div>
 
-      <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-6">
-        <div className="text-lg text-zinc-300">Coming soon</div>
-        <div className="mt-2 text-sm text-zinc-500">Track bets, P&L, and exposures.</div>
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center max-w-md px-4">
+          <div className="text-sm text-[#a0a0a0]">Coming soon</div>
+          <div className="mt-1.5 text-xs text-[#666]">Track bets, P&L, and exposures.</div>
+        </div>
       </div>
     </div>
   );

@@ -33,21 +33,21 @@ const stats = [
 
 export function StatCards() {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat) => {
+    <div className="flex flex-col sm:flex-row sm:divide-x sm:divide-[#2a2a2a] border-y border-[#1a1a1a]">
+      {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <div
             key={stat.label}
-            className="rounded-lg border border-[#2a2a2a] bg-[#1e1e1e] p-4"
+            className={`flex-1 px-4 py-3 ${index > 0 ? 'border-t sm:border-t-0 border-[#1a1a1a]' : ''}`}
           >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-xs text-[#a0a0a0]">{stat.label}</p>
-                <p className="mt-2 text-2xl font-semibold font-mono">{stat.value}</p>
-                <p className="mt-1 text-xs text-[#666]">{stat.sublabel}</p>
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-[10px] uppercase tracking-wider text-[#666] font-medium">{stat.label}</p>
+                <p className="mt-1.5 text-xl font-mono font-semibold">{stat.value}</p>
+                <p className="mt-0.5 text-[11px] text-[#666]">{stat.sublabel}</p>
               </div>
-              <Icon className="h-5 w-5" style={{ color: stat.color }} />
+              <Icon className="h-4 w-4 text-[#666] ml-3" />
             </div>
           </div>
         );

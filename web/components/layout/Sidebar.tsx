@@ -15,18 +15,15 @@ const bottomItems = [
   { name: "Parameters", href: "/parameters", icon: Settings },
 ];
 
-export function Sidebar() {
+interface SidebarContentProps {
+  onNavigate?: () => void;
+}
+
+export function SidebarContent({ onNavigate }: SidebarContentProps) {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen w-60 flex-col border-r border-[#2a2a2a] bg-[#1e1e1e]">
-      <div className="flex h-14 items-center border-b border-[#2a2a2a] px-4">
-        <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded bg-[#00bfa5]" />
-          <span className="text-sm font-semibold">RiskCourt_</span>
-        </div>
-      </div>
-
+    <>
       <nav className="flex-1 space-y-1 p-3">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -35,8 +32,9 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#00bfa5]",
                 isActive
                   ? "bg-[#00bfa5]/10 text-[#00bfa5]"
                   : "text-[#a0a0a0] hover:bg-[#242424] hover:text-white"
@@ -57,8 +55,9 @@ export function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onNavigate}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#00bfa5]",
                 isActive
                   ? "bg-[#00bfa5]/10 text-[#00bfa5]"
                   : "text-[#a0a0a0] hover:bg-[#242424] hover:text-white"
@@ -70,6 +69,20 @@ export function Sidebar() {
           );
         })}
       </div>
+    </>
+  );
+}
+
+export function Sidebar() {
+  return (
+    <div className="hidden lg:flex h-screen w-56 flex-col border-r border-[#2a2a2a] bg-[#1e1e1e]">
+      <div className="flex h-14 items-center border-b border-[#2a2a2a] px-3">
+        <div className="flex items-center gap-2">
+          <div className="h-5 w-5 rounded bg-[#00bfa5]" />
+          <span className="text-sm font-semibold">RiskCourt_</span>
+        </div>
+      </div>
+      <SidebarContent />
     </div>
   );
 }

@@ -1,5 +1,10 @@
+"use client";
+
+import { useState } from "react";
 import { StatCards } from "@/components/terminal/StatCards";
 import { LiveMarketsTable, type MarketRow } from "@/components/terminal/LiveMarketsTable";
+import { StatCardsSkeleton, TableSkeleton } from "@/components/terminal/LoadingSkeleton";
+import { ErrorState } from "@/components/terminal/ErrorState";
 
 const mockData: MarketRow[] = [
   {
@@ -38,24 +43,27 @@ const mockData: MarketRow[] = [
 ];
 
 export default function TerminalPage() {
+  // Simulate different states - set to "success" for normal operation
+  const [state] = useState<"loading" | "error" | "success">("success");
+
   return (
-    <div className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col h-full">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between px-4 py-3 border-b border-[#1a1a1a]">
         <div>
-          <h1 className="text-2xl font-semibold">Terminal</h1>
-          <p className="mt-1 text-sm text-[#a0a0a0]">
+          <h1 className="text-lg font-medium tracking-tight">Terminal</h1>
+          <p className="mt-0.5 text-xs text-[#666]">
             Live market analysis and opportunities
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 mt-3 md:mt-0">
           {["Yesterday", "Today", "Tomorrow"].map((day, i) => (
             <button
               key={day}
               className={
                 i === 1
-                  ? "rounded-md bg-[#00bfa5] px-4 py-2 text-sm font-medium text-black"
-                  : "rounded-md border border-[#333] bg-[#242424] px-4 py-2 text-sm text-[#a0a0a0] hover:border-[#444] hover:text-white"
+                  ? "bg-[#00bfa5] px-3 py-1.5 text-xs font-medium text-black focus:outline-none focus:ring-1 focus:ring-[#00bfa5]"
+                  : "border border-[#2a2a2a] px-3 py-1.5 text-xs text-[#666] hover:border-[#444] hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-[#00bfa5]"
               }
             >
               {day}
@@ -64,9 +72,34 @@ export default function TerminalPage() {
         </div>
       </div>
 
-      <StatCards />
+      <div className="flex-1 overflow-auto">
+        {state === "loading" && (
+          <>
+            <StatCardsSkeleton />
+            <TableSkeleton />
+          </>
+        )}
 
-      <LiveMarketsTable data={mockData} />
+        {state === "error" && (
+          <>
+            <StatCards />
+            <ErrorState
+              title="Unable to load live markets"
+              message="We're having trouble connecting to our data sources. Showing sample data below."
+              details="Network error: Failed to fetch from api.riskcourt.com/v1/slate/today"
+              onRetry={() => window.location.reload()}
+            />
+            <LiveMarketsTable data={mockData} />
+          </>
+        )}
+
+        {state === "success" && (
+          <>
+            <StatCards />
+            <LiveMarketsTable data={mockData} />
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -2,16 +2,17 @@
 
 import { Search, Activity } from "lucide-react";
 import { useState } from "react";
+import { CommandPalette } from "@/components/ui/CommandPalette";
 
 export function TopBar() {
-  const [, setCommandOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
 
   return (
-    <div className="flex h-14 items-center justify-between border-b border-[#2a2a2a] bg-[#1e1e1e] px-6">
+    <div className="flex h-14 items-center justify-between border-b border-[#2a2a2a] bg-[#1e1e1e] px-4">
       <div className="flex items-center gap-4">
         <button
           onClick={() => setCommandOpen(true)}
-          className="flex h-9 w-96 items-center gap-2 rounded-md border border-[#333] bg-[#242424] px-3 text-sm text-[#666] hover:border-[#444] hover:text-[#a0a0a0]"
+          className="flex h-9 w-96 items-center gap-2 rounded-md border border-[#333] bg-[#242424] px-3 text-sm text-[#666] hover:border-[#444] hover:text-[#a0a0a0] focus:outline-none focus:ring-2 focus:ring-[#00bfa5]"
         >
           <Search className="h-4 w-4" />
           <span>Search markets...</span>
@@ -43,6 +44,8 @@ export function TopBar() {
           JD
         </div>
       </div>
+
+      <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />
     </div>
   );
 }

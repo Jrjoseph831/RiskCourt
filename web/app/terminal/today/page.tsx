@@ -3,17 +3,17 @@ import { mockSlate } from "@/lib/mock/slate";
 
 export default function TodayTerminalPage() {
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6">
-        <div className="text-2xl font-semibold tracking-tight text-zinc-100">
-          Today’s Slate
-        </div>
-        <div className="mt-1 text-sm text-zinc-400">
+    <div className="flex flex-col h-full">
+      <div className="px-4 py-3 border-b border-[#1a1a1a]">
+        <h1 className="text-lg font-medium tracking-tight">Today's Slate</h1>
+        <p className="mt-0.5 text-xs text-[#666]">
           Quant-style terminal view (mock data for now).
-        </div>
+        </p>
       </div>
 
-      <SlateTable rows={mockSlate} />
-    </main>
+      <div className="flex-1 overflow-auto">
+        <SlateTable rows={mockSlate} />
+      </div>
+    </div>
   );
 }
