@@ -72,7 +72,7 @@ export function SlateTable({ rows }: { rows: SlateRow[] }) {
           <select
             className="rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm outline-none focus:border-zinc-600"
             value={market}
-            onChange={(e) => setMarket(e.target.value as any)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setMarket(e.target.value as MarketKey | "all")}
           >
             <option value="all">All</option>
             <option value="h2h">Moneyline</option>
