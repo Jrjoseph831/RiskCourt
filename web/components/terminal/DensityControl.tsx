@@ -13,15 +13,15 @@ export function DensityControl({ onDensityChange, storageKey = "riskcourt:termin
   const [density, setDensity] = useState<Density>("comfortable");
   
   useEffect(() => {
-    // Load from localStorage
+    // Load from localStorage on mount
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem(storageKey) as Density | null;
       if (saved && (saved === "compact" || saved === "comfortable")) {
         setDensity(saved);
-        onDensityChange(saved);
       }
     }
-  }, [storageKey, onDensityChange]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
   const toggleDensity = () => {
     const newDensity = density === "compact" ? "comfortable" : "compact";

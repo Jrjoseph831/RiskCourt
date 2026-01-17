@@ -12,11 +12,12 @@ import {
   type ExpandedState,
   type VisibilityState,
 } from "@tanstack/react-table";
-import { ChevronDown, ChevronRight, Filter, Plus, Activity } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, Activity } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { MarketDetailDrawer } from "./MarketDetailDrawer";
+import { AddToLedgerDrawer } from "./AddToLedgerDrawer";
 import { ColumnsControl } from "./ColumnsControl";
 import { DensityControl } from "./DensityControl";
+import type { TodayGame } from "@/lib/types/database";
 
 export type MarketRow = {
   id: string;
@@ -28,6 +29,7 @@ export type MarketRow = {
   edge: number;
   reasoning?: string;
   tags?: string[];
+  gameData?: TodayGame; // Full game data for detail drawer
 };
 
 const columns: ColumnDef<MarketRow>[] = [
@@ -275,7 +277,7 @@ export function LiveMarketsTable({ data }: { data: MarketRow[] }) {
         )}
       </div>
 
-      <MarketDetailDrawer
+      <AddToLedgerDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         market={selectedMarket}
