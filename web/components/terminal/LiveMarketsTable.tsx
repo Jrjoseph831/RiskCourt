@@ -188,7 +188,12 @@ export function LiveMarketsTable({ data }: { data: MarketRow[] }) {
                     "border-b border-[#1a1a1a] hover:bg-[#1a1a1a]/30 transition-colors cursor-pointer",
                     density === "compact" ? "h-10" : "h-12"
                   )}
-                  onClick={() => {
+                  onClick={(e) => {
+                    // Don't open drawer if clicking expander button
+                    const target = e.target as HTMLElement;
+                    if (target.closest('button[aria-label*="Expand"]') || target.closest('button[aria-label*="Collapse"]')) {
+                      return;
+                    }
                     setSelectedMarket(row.original);
                     setDrawerOpen(true);
                   }}
